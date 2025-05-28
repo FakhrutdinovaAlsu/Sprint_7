@@ -1,6 +1,7 @@
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.praktikum.CourierSteps;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +13,15 @@ public class LoginCourierTest {
     private String password;
     private String firstName;
 
+    @Before
+    public void setUp() {
+        returnRandomLogin();
+        returnRandomPassword();
+        returnRandomFirstName();
+        courierSteps
+                .createCourier(login, password,firstName);
+    }
+
     @After
     public void tearDown() {
         Integer id = courierSteps.loginCourier(login, password).extract().path("id");
@@ -22,11 +32,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldLogIn() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
-        courierSteps
-                .createCourier(login, password,firstName);
         courierSteps
                 .loginCourier(login, password)
                 .statusCode(200);
@@ -34,11 +39,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldReturnId() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
-        courierSteps
-                .createCourier(login, password,firstName);
         Integer id = courierSteps
                 .loginCourier(login, password)
                 .extract().path("id");
@@ -47,11 +47,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldNotLogInWithoutLogin() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
-        courierSteps
-                .createCourier(login, password,firstName);
         courierSteps
                 .loginCourier("", password)
                 .statusCode(400)
@@ -60,11 +55,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldNotLogInWithoutPassword() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
-        courierSteps
-                .createCourier(login, password, firstName);
         courierSteps
                 .loginCourier(login, "")
                 .statusCode(400)
@@ -73,11 +63,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldNotLogInWithIncorrectLogin() {
-        returnRandomLogin();
-        returnRandomPassword();
-        firstName = RandomStringUtils.randomAlphabetic(10);
-        courierSteps
-                .createCourier(login, password,firstName);
         courierSteps
                 .loginCourier(login+"abc", password)
                 .statusCode(404)
@@ -86,11 +71,6 @@ public class LoginCourierTest {
 
     @Test
     public void shouldNotLogInWithIncorrectPassword() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
-        courierSteps
-                .createCourier(login, password,firstName);
         courierSteps
                 .loginCourier(login, password+"abc")
                 .statusCode(404)
