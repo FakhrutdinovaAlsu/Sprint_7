@@ -6,16 +6,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import io.qameta.allure.Step;
+import ru.praktikum.OrderDetails;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
-    private String color;
+    private String[] color;
 
-    public CreateOrderTest(String color) {
-        this.color = color;
+    public CreateOrderTest(String colorData) {
+        if (colorData.isEmpty()) {
+            this.color = new String[0];
+        } else {
+            this.color = colorData.split(", ");
+        }
     }
 
     @Before
@@ -35,27 +40,16 @@ public class CreateOrderTest {
 
     @Test
     public void orderShouldHaveTrackNumber() {
-        Response response = sendPostRequest();
+        Response response = sendPostRequest(color);
         compareTrackNotNullValue(response);
     }
 
     @Step("sendPostRequestOrder")
-    public Response sendPostRequest() {
+    public Response sendPostRequest(String[] color) {
+        OrderDetails orderDetails = new OrderDetails("Guest","Uchiha","onoha, 142 apt.", "4","+7 800 355 35 35", 5,"2020-06-06","Saske, come back to Konoha",color);
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "    \"firstName\": \"Guest\",\n" +
-                        "    \"lastName\": \"Uchiha\",\n" +
-                        "    \"address\": \"Konoha, 142 apt.\",\n" +
-                        "    \"metroStation\": 4,\n" +
-                        "    \"phone\": \"+7 800 355 35 35\",\n" +
-                        "    \"rentTime\": 5,\n" +
-                        "    \"deliveryDate\": \"2020-06-06\",\n" +
-                        "    \"comment\": \"Saske, come back to Konoha\",\n" +
-                        "    \"color\": [\n" +
-                        "        \"" + color + "\"\n" +
-                        "    ]\n" +
-                        "}")
+                .body(orderDetails)
                 .when()
                 .post("/api/v1/orders");
         return response;
