@@ -26,16 +26,8 @@ private String firstName;
         returnRandomPassword();
         courierSteps
                 .createCourier(login, password,firstName)
-                .body("ok",is(true));
-    }
-
-    @Test
-    public void  shouldReturnCode201() {
-        returnRandomLogin();
-        returnRandomPassword();
-        courierSteps
-                .createCourier(login, password,firstName)
-                .statusCode(201);
+                .statusCode(201).
+                body("ok",is(true));
     }
 
     @Test

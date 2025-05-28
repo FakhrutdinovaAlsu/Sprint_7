@@ -34,12 +34,6 @@ public class CreateOrderTest {
     }
 
     @Test
-    public void shouldOrderWithDifferentColor() {
-        Response response = sendPostRequest();
-        compareStatusCode(response);
-    }
-
-    @Test
     public void orderShouldHaveTrackNumber() {
         Response response = sendPostRequest();
         compareTrackNotNullValue(response);
@@ -70,13 +64,7 @@ public class CreateOrderTest {
     @Step
         public void compareTrackNotNullValue(Response response) {
             response.then()
-                    .assertThat().body("track",notNullValue());
-        }
-
-    @Step
-        public void compareStatusCode(Response response) {
-            response.then()
-                    .statusCode(201);
+                    .assertThat().statusCode(201).body("track",notNullValue());
         }
 
 }
