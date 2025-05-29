@@ -1,5 +1,3 @@
-import io.qameta.allure.Step;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,16 +6,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.Matchers.*;
 
 public class LoginCourierTest {
-    private CourierSteps courierSteps = new CourierSteps();
+    private final CourierSteps courierSteps = new CourierSteps();
     private String login;
     private String password;
     private String firstName;
 
     @Before
     public void setUp() {
-        returnRandomLogin();
-        returnRandomPassword();
-        returnRandomFirstName();
+        login = CourierSteps.returnRandomLogin();
+        password = CourierSteps.returnRandomPassword();
+        firstName = CourierSteps.returnRandomFirstName();
         courierSteps
                 .createCourier(login, password,firstName);
     }
@@ -79,26 +77,10 @@ public class LoginCourierTest {
 
     @Test
     public void shouldNotLogInIfCourierNotExist() {
-        returnRandomLogin();
-        returnRandomPassword();
+        login = CourierSteps.returnRandomLogin();
         courierSteps
                 .loginCourier(login, password)
                 .statusCode(404)
                 .body("message",is("Учетная запись не найдена"));
-    }
-
-    @Step("Create a random value login")
-    public void returnRandomLogin() {
-        login = RandomStringUtils.randomAlphabetic(10);
-    }
-
-    @Step("Create a random value password")
-    public void returnRandomPassword() {
-        password = RandomStringUtils.randomAlphabetic(10);
-    }
-
-    @Step("Create a random value firstName")
-    public void returnRandomFirstName() {
-        firstName = RandomStringUtils.randomAlphabetic(10);
     }
 }
