@@ -1,14 +1,11 @@
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import io.qameta.allure.Step;
-import ru.praktikum.OrderDetails;
-
-import static io.restassured.RestAssured.given;
+import ru.praktikum.OrderSteps;
 import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(Parameterized.class)
@@ -40,25 +37,12 @@ public class CreateOrderTest {
 
     @Test
     public void orderShouldHaveTrackNumber() {
-        Response response = sendPostRequest(color);
+        ValidatableResponse response = OrderSteps.sendPostRequest(color);
         compareTrackNotNullValue(response);
     }
 
-    @Step("sendPostRequestOrder")
-    public Response sendPostRequest(String[] color) {
-        OrderDetails orderDetails = new OrderDetails("Guest","Uchiha","onoha, 142 apt.", "4","+7 800 355 35 35", 5,"2020-06-06","Saske, come back to Konoha",color);
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .body(orderDetails)
-                .when()
-                .post("/api/v1/orders");
-        return response;
-    }
-
     @Step
-        public void compareTrackNotNullValue(Response response) {
-            response.then()
-                    .assertThat().statusCode(201).body("track",notNullValue());
+        public void compareTrackNotNullValue(ValidatableResponse  response) {
+            response.statusCode(201).body("track",notNullValue());
         }
-
 }
