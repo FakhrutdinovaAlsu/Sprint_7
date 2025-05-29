@@ -6,27 +6,22 @@ import static io.restassured.RestAssured.given;
 public class CourierSteps {
 
     public ValidatableResponse createCourier(String login, String password, String firstName) {
+        LogInDetails logInDetails = new LogInDetails(login, password,firstName);
         return (ValidatableResponse) given()
                 .contentType(ContentType.JSON)
                 .baseUri("https://qa-scooter.praktikum-services.ru/")
-                .body("{\n" +
-                        "    \"login\": \"" + login + "\",\n" +
-                        "    \"password\": \"" + password + "\",\n" +
-                        "    \"firstName\": \"" + firstName + "\"\n" +
-                        "}")
+                .body(logInDetails)
                 .when()
                 .post("/api/v1/courier")
                 .then();
     }
 
     public ValidatableResponse loginCourier(String login, String password) {
+        LogInDetails logInDetails = new LogInDetails(login, password);
         return given()
                 .contentType(ContentType.JSON)
                 .baseUri("https://qa-scooter.praktikum-services.ru/")
-                .body("{\n" +
-                        "    \"login\": \"" + login + "\",\n" +
-                        "    \"password\": \"" + password + "\"\n" +
-                        "}")
+                .body(logInDetails)
                 .when()
                 .post("/api/v1/courier/login")
                 .then();
